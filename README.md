@@ -9,7 +9,7 @@ Learn how to do a machine learning project.
 
 
 ### Data
-[M5 Forecasting - Accuracy)[https://www.kaggle.com/c/m5-forecasting-accuracy/data]
+[M5 Forecasting - Accuracy](https://www.kaggle.com/c/m5-forecasting-accuracy/data)
 
 
 
