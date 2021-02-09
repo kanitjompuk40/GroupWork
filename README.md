@@ -1,26 +1,24 @@
 # Groupwork 
 
 
-### Advanced Machine Leaning
+## Advanced Machine Leaning
 
-#### Goal
+### Goal
 
 Learn how to do a machine learning project.
 
 
-#### Data
-
-(Estimate the unit sales of Walmart retail goods - Accuracy)[https://www.kaggle.com/c/m5-forecasting-accuracy/data]
-
+### Data
+[M5 Forecasting - Accuracy)[https://www.kaggle.com/c/m5-forecasting-accuracy/data]
 
 
 
-### Data Mining
+## Data Mining
 
 
 
 
-### Deep Learning
+## Deep Learning
 
 
 
