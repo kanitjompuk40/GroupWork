@@ -24,7 +24,7 @@ def meltM5(df, days = 1941, items = 30490):
 
     Returns
     -------
-    df
+    df_melt
         Sales data in a melted format
     """
     
