@@ -38,7 +38,7 @@ def meltM5(df, days = 1941, items = 30490):
     
     return df_melt
 
-def joinDataSets(melt_df, calendar_df, prices_df):
+def joinDataSets(melt_df, calendar_df, prices_df, dropPriceNA=True):
     """Function joins melted dataframe with calendar and sell price dataframes
 
     Parameters
@@ -49,6 +49,9 @@ def joinDataSets(melt_df, calendar_df, prices_df):
         Calendar dataframe
     prices_df : Pandas DataFrame
         sell prices dataframe
+    dropPriceNA: boolean, optional
+        drop rows for which a sell price is not given (since this means that the 
+        product was not on sale that day), default is True
 
     Returns
     -------
@@ -59,10 +62,11 @@ def joinDataSets(melt_df, calendar_df, prices_df):
     df_joined = pd.merge(melt_df, calendar_df, on='d', how='left')
     #Join sell prices data
     df_joined = pd.merge(df_joined, prices_df, on=['store_id','item_id','wm_yr_wk'], how='left') 
-
+    #Drop rows where sell price is na
+    if dropPriceNA:
+        df_joined.dropna(subset=['sell_price'], inplace=True)
+        
     return df_joined
-
-
 
 
 
