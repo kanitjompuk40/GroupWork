@@ -9,6 +9,8 @@ Created on Wed Feb 10 15:28:06 2021
 ###M5 Helper Functions
 
 import pandas as pd
+import os
+import random
 
 def meltM5(df, days = 1941, items = 30490):
     """Function returns melted version of M5 sales data
@@ -71,7 +73,37 @@ def joinDataSets(melt_df, calendar_df, prices_df, dropPriceNA=True):
 
 
 
+def load_calendar_data():    
+    csv_path = os.path.join('data', 'calendar.csv')
+    return pd.read_csv(csv_path)
+
+
+def load_sell_price_data():
+    csv_path = os.path.join('data', 'sell_prices.csv')
+    return pd.read_csv(csv_path)
+
+
+def load_sales_train_validation_data():
+    csv_path = os.path.join('data', 'sales_train_validation.csv')
+    return pd.read_csv(csv_path)
+
+
+def load_sales_train_evaluation_data():
+    csv_path = os.path.join('data', 'sales_train_evaluation.csv')
+    return pd.read_csv(csv_path)
+
+
+def load_meltedJoined_data():    
+    csv_path = os.path.join('data', 'meltedJoinedDf.csv')
+    return pd.read_csv(csv_path)
+
+def load_reduced_data():    
+    csv_path = os.path.join('data', 'reduced.csv')
+    return pd.read_csv(csv_path)
 
 
 
-
+def reduceDataset(df, cuttOffDate = "2011-06-29", numberOfProducts = 500):
+    df_reduced = df.loc[df["date"] < cuttOffDate]
+    random_products = random.choices(list(set(df_reduced["id"])), k = numberOfProducts)
+    return(df_reduced[df_reduced['id'].isin(random_products)])
