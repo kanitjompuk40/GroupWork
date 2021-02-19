@@ -107,3 +107,11 @@ def reduceDataset(df, cuttOffDate = "2011-06-29", numberOfProducts = 500):
     df_reduced = df.loc[df["date"] < cuttOffDate]
     random_products = random.choices(list(set(df_reduced["id"])), k = numberOfProducts)
     return(df_reduced[df_reduced['id'].isin(random_products)])
+    
+    
+def cleanDates(df):
+    #Drops weekday, date and wm_yr_wk and creates a weekend binary indicator
+    df.drop(['weekday','date','wm_yr_wk'], axis=1, inplace=True)
+    df = df.assign(weekend=lambda df: df.apply(lambda row: 1 if row.wday == 1 or row.wday == 2 else 0, axis=1))
+    return df
+
