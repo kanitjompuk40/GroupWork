@@ -115,3 +115,19 @@ def cleanDates(df):
     df = df.assign(weekend=lambda df: df.apply(lambda row: 1 if row.wday == 1 or row.wday == 2 else 0, axis=1))
     return df
 
+def cleanEvents(df):
+    #Drops type of events and creates binary indicators for the 4 types of event plus one for christmas
+    df=df.assign(sporting=lambda df:df.apply(lambda row: 1 if row.event_type_1=="Sporting" 
+                                                         or row.event_type_2=="Sporting" else 0,axis=1))
+    df=df.assign(cultural=lambda df:df.apply(lambda row: 1 if row.event_type_1=="Cultural" 
+                                                         or row.event_type_2=="Cultural" else 0,axis=1))
+    df=df.assign(national=lambda df:df.apply(lambda row: 1 if row.event_type_1=="National" 
+                                                             or row.event_type_2=="National" else 0,axis=1))
+    df=df.assign(religious=lambda df:df.apply(lambda row: 1 if row.event_type_1=="Religious" 
+                                                            or row.event_type_2=="Religious" else 0,axis=1)) 
+    df=df.assign(christmas=lambda df:df.apply(lambda row: 1 if row.event_name_1=="Christmas" 
+                                                            or row.event_name_2=="Christmas" else 0,axis=1)) 
+    
+    df.drop(['event_type_1','event_type_2'],axis=1,inplace=True)
+    
+    return df
