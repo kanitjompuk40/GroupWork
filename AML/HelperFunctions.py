@@ -145,7 +145,7 @@ def cleanEvents(df):
     return df
 
 def encodeItemAndStoreData(df):
-    df.drop(['id','item_id'], axis=1, inplace=True)
+    df.drop(['item_id'], axis=1, inplace=True)
 
     encode_variables = ['dept_id', 'cat_id','store_id','state_id']
     for var in encode_variables:
