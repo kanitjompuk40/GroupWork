@@ -131,3 +131,14 @@ def cleanEvents(df):
     df.drop(['event_type_1','event_type_2'],axis=1,inplace=True)
     
     return df
+
+def rollingMeanDemandFeature(data, windowSize, shift):
+    data['rolling_mean_'+str(windowSize)+'_'+str(shift)] = data.groupby(['id'])['sold'].transform(lambda x: x.shift(shift).rolling(windowSize).mean())
+    return data
+
+def lagFeature(df, var='sold', lag=1):
+    df['sold_lag_'+str(lag)] = df.groupby(['id'])[var].shift(lag)
+    return df
+    
+    
+    
