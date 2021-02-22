@@ -112,7 +112,19 @@ def reduceDataset(df, cuttOffDate = "2011-06-29", numberOfProducts = 500):
 def cleanDates(df):
     #Drops weekday, date and wm_yr_wk and creates a weekend binary indicator
     df.drop(['weekday','date','wm_yr_wk'], axis=1, inplace=True)
-    df = df.assign(weekend=lambda df: df.apply(lambda row: 1 if row.wday == 1 or row.wday == 2 else 0, axis=1))
+    #df = df.assign(weekend=lambda df: df.apply(lambda row: 1 if row.wday == 1 or row.wday == 2 else 0, axis=1))
+    sat = df['wday'] == 1 
+    sun = df['wday'] == 2
+    mon = df['wday'] == 3
+    tue = df['wday'] == 4
+    wed = df['wday'] == 5
+    thur = df['wday'] == 6
+    fri = df['wday'] == 7
+    df['weekend'] = (sat | sun).astype(int)
+    df['midweek'] = (tue | wed | thur).astype(int)
+    df['monfri'] = (mon | fri).astype(int)
+    #Convert the d column into integer
+    df['d'] = df['d'].str.replace('d_', '').astype(int)
     return df
 
 def cleanEvents(df):
@@ -128,8 +140,19 @@ def cleanEvents(df):
     df=df.assign(christmas=lambda df:df.apply(lambda row: 1 if row.event_name_1=="Christmas" 
                                                             or row.event_name_2=="Christmas" else 0,axis=1)) 
     
-    df.drop(['event_type_1','event_type_2'],axis=1,inplace=True)
+    df.drop(['event_type_1','event_type_2','event_name_1','event_name_2'],axis=1,inplace=True)
     
+    return df
+
+def encodeItemAndStoreData(df):
+    df.drop(['id','item_id'], axis=1, inplace=True)
+
+    encode_variables = ['dept_id', 'cat_id','store_id','state_id']
+    for var in encode_variables:
+        dummy = pd.get_dummies(df[var])
+        df = pd.concat([df, dummy], axis=1)
+        df.drop([var], axis=1, inplace=True)
+        
     return df
 
 def rollingMeanDemandFeature(data, windowSize, shift):
@@ -138,6 +161,15 @@ def rollingMeanDemandFeature(data, windowSize, shift):
 
 def lagFeature(df, var='sold', lag=1):
     df['sold_lag_'+str(lag)] = df.groupby(['id'])[var].shift(lag)
+    return df
+
+def rawToClean(sales_df, calendar_df, price_df, days=300, items=100, dropNAPrices=True):
+    df = meltM5(sales_df, days = days, items = items)
+    df = joinDataSets(df, calendar_df, price_df, dropPriceNA=dropNAPrices)
+    df = cleanEvents(df)
+    df = cleanDates(df)
+    df = encodeItemAndStoreData(df)
+    
     return df
     
     
