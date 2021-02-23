@@ -1,7 +1,7 @@
 # Groupwork 
 
 
-## Advanced Machine Leaning
+## Advanced Machine Learning
 
 ### Goal
 
@@ -16,6 +16,9 @@ Learn how to do a machine learning project.
 ## Data Mining
 
 
+### Data
+[Used Car Price](https://www.kaggle.com/austinreese/craigslist-carstrucks-data)
+
 
 
 ## Deep Learning
@@ -23,7 +26,7 @@ Learn how to do a machine learning project.
 
 
 
-### Preprocessing
+## Preprocessing
 
-Some codes are reproduced from [chsasank/Traffic-Sign-Classification.keras](https://github.com/chsasank/Traffic-Sign-Classification.keras)
+Some codes are reproduced from [chsasank/Traffic-Sign-Classification.keras](https://github.com/chsasank/Traffic-Sign-Classification.keras).
 
