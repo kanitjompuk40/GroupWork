@@ -173,4 +173,8 @@ def rawToClean(sales_df, calendar_df, price_df, days=300, items=100, dropNAPrice
     return df
     
     
-    
+def getTargetAndFeatures(df):
+    y = df.sold.values
+    X_df = df.drop(['sold'], axis=1)
+    X = X_df.values
+    return y, X
