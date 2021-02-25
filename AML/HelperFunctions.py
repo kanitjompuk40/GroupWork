@@ -9,6 +9,7 @@ Created on Wed Feb 10 15:28:06 2021
 ###M5 Helper Functions
 
 import pandas as pd
+import numpy as np
 import os
 import random
 
@@ -128,19 +129,34 @@ def cleanDates(df):
     return df
 
 def cleanEvents(df):
-    #Drops type of events and creates binary indicators for the 4 types of event plus one for christmas
-    df=df.assign(sporting=lambda df:df.apply(lambda row: 1 if row.event_type_1=="Sporting" 
-                                                         or row.event_type_2=="Sporting" else 0,axis=1))
-    df=df.assign(cultural=lambda df:df.apply(lambda row: 1 if row.event_type_1=="Cultural" 
-                                                         or row.event_type_2=="Cultural" else 0,axis=1))
-    df=df.assign(national=lambda df:df.apply(lambda row: 1 if row.event_type_1=="National" 
-                                                             or row.event_type_2=="National" else 0,axis=1))
-    df=df.assign(religious=lambda df:df.apply(lambda row: 1 if row.event_type_1=="Religious" 
-                                                            or row.event_type_2=="Religious" else 0,axis=1)) 
-    df=df.assign(christmas=lambda df:df.apply(lambda row: 1 if row.event_name_1=="Christmas" 
-                                                            or row.event_name_2=="Christmas" else 0,axis=1)) 
-    
-    df.drop(['event_type_1','event_type_2','event_name_1','event_name_2'],axis=1,inplace=True)
+    #Converts NaN to 'nan'
+    df['event_type_1'] = df['event_type_1'].astype(str)
+    df['event_type_2'] = df['event_type_2'].astype(str)
+
+    #Find the unique events in event_type_2
+    nan_array = np.array(['nan'])
+    unique_types = np.unique(df.event_type_2)
+    type_loop = np.setdiff1d(unique_types,nan_array)
+
+    #One-hot encoding event types
+    dummy = pd.get_dummies(df[['event_type_1','event_type_2']])
+    df = pd.concat([df, dummy], axis=1)
+    for e in type_loop:
+        df['event_type_1_'+e] = ((df['event_type_1_'+e] == 1)  | (df['event_type_2_'+e] == 1)).astype(int)
+
+    #One-hot encode specific event names
+    df['Christmas'] = ((df['event_name_1'] == 'Christmas')  | (df['event_name_2'] == 'Christmas')).astype(int)
+
+    #Drop unneeded columns
+    df.drop(['event_name_1','event_name_2','event_type_1','event_type_2'], axis=1, inplace=True)
+    df.drop(list(df.filter(regex = 'event_type_2')), axis = 1, inplace = True)
+
+    #Rename column names
+    df.rename(columns={"event_type_1_National": "National", 
+                       "event_type_1_Religious": "Religious",
+                        "event_type_1_Cultural": "Cultural",
+                      "event_type_1_Sporting": "Sporting",
+                      "event_type_1_nan": "NoEvent"}, inplace=True)
     
     return df
 
