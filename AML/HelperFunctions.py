@@ -194,3 +194,28 @@ def getTargetAndFeatures(df):
     X_df = df.drop(['sold'], axis=1)
     X = X_df.values
     return y, X
+
+
+
+# type casting to reduce memory usage
+def typeCastCalendar(calendar):
+    # month, wdays are small numbers and snap_CA, snap_TX, and snap_WI are just booleans
+    calendar[["month", 'wday', "snap_CA", "snap_TX", "snap_WI"]]= calendar[["month", 'wday', "snap_CA", "snap_TX", "snap_WI"]].astype("int8")
+
+    calendar[['wm_yr_wk', 'year']] = calendar[['wm_yr_wk', 'year']].astype('int16')
+
+    calendar[['date']] = calendar[['date']].astype('datetime64')
+
+    calendar[['weekday', "event_name_1", "event_type_1", "event_name_2", "event_type_2"]] = calendar[['weekday', "event_name_1", "event_type_1", "event_name_2", "event_type_2"]].astype('category')
+
+    return calendar
+
+def typeCastSales(data):
+    data.iloc[:, 6:] = data.iloc[:, 6:].astype("int16")
+    return data
+
+def typeCastPrice(data):
+    data[['wm_yr_wk']] = data[['wm_yr_wk']].astype('int16')
+    data["sell_price"] = data["sell_price"].astype("float16")
+    return data
+    
