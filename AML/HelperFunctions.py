@@ -175,6 +175,27 @@ def rollingMeanDemandFeature(data, windowSize, shift):
     data['rolling_mean_'+str(windowSize)+'_'+str(shift)] = data.groupby(['id'])['sold'].transform(lambda x: x.shift(shift).rolling(windowSize).mean())
     return data
 
+def rollingMeanWeekday(df, weeks, shift):
+    
+    """
+    Inputs are dataframe with number of sales, number of weeks to average, and number to shift
+    
+    Takes the rolling mean average of the past n weeks for that particular weekday
+    returns dataframe with added column of the rolling averages
+    """
+    
+    data = pd.DataFrame(columns = df.columns)
+    for day in range(7):
+        d = df[day:][::7]
+        d = rollingMeanDemandFeature(d, windowSize= weeks, shift=shift) 
+        data = pd.concat([data, d])
+    
+    data.rename(columns = {"rolling_mean_{}_{}".format(str(weeks), str(shift)):\
+                           "rolling_weeks_{}_{}".format(str(weeks), str(shift))})
+    data = data.sort_index()
+    return(data)
+
+
 def lagFeature(df, var='sold', lag=1):
     df['sold_lag_'+str(lag)] = df.groupby(['id'])[var].shift(lag)
     return df
